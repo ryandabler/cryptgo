@@ -1,5 +1,12 @@
 package util
 
+type direction int
+
+const (
+	Left direction = iota
+	Right
+)
+
 func MapValues[K comparable, V any](m map[K]V, f func(V, K) V) map[K]V {
 	for k, v := range m {
 		m[k] = f(v, k)
@@ -26,4 +33,37 @@ func Take[T any](s []T, n uint) []T {
 	}
 
 	return newS
+}
+
+func IndexOf[T comparable](arr []T, v T) int {
+	for i, e := range arr {
+		if e == v {
+			return i
+		}
+	}
+
+	return -1
+}
+
+func wrap(n int, mod int) int {
+	for n < 0 {
+		n += mod
+	}
+
+	return n % mod
+}
+
+func shift(n int, by int, dir direction) int {
+	if dir == Left {
+		return n - by
+	} else if dir == Right {
+		return n + by
+	}
+
+	return n
+}
+
+func ShiftWrap(n int, by int, mod int, dir direction) int {
+	shifted := shift(n, by, dir)
+	return wrap(shifted, mod)
 }

@@ -7,12 +7,12 @@ type Ranker func([]string) []string
 func encrypt(text []rune, key rune, alphabet []rune) []rune {
 	runes := []rune(text)
 	mod := len(alphabet)
-	shift := indexOf(alphabet, key)
+	shift := util.IndexOf(alphabet, key)
 	cipher := make([]rune, len(runes))
 
 	for i, r := range runes {
-		pos := indexOf(alphabet, r)
-		newPos := (pos - shift + mod) % mod
+		pos := util.IndexOf(alphabet, r)
+		newPos := util.ShiftWrap(pos, shift, mod, util.Left)
 		cipher[i] = alphabet[newPos]
 	}
 
@@ -22,12 +22,12 @@ func encrypt(text []rune, key rune, alphabet []rune) []rune {
 func decrypt(text []rune, key rune, alphabet []rune) []rune {
 	runes := []rune(text)
 	mod := len(alphabet)
-	shift := indexOf(alphabet, key)
+	shift := util.IndexOf(alphabet, key)
 	plain := make([]rune, len(runes))
 
 	for i, r := range runes {
-		pos := indexOf(alphabet, r)
-		newPos := (pos + shift) % mod
+		pos := util.IndexOf(alphabet, r)
+		newPos := util.ShiftWrap(pos, shift, mod, util.Right)
 		plain[i] = alphabet[newPos]
 	}
 

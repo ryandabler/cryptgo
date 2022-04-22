@@ -25,16 +25,6 @@ func toStrings(rs [][]rune) []string {
 	return ss
 }
 
-func indexOf(arr []rune, v rune) int {
-	for i, e := range arr {
-		if e == v {
-			return i
-		}
-	}
-
-	return -1
-}
-
 func sortedFreqs(freqs map[string]float64) []string {
 	intermediate := make([]struct {
 		k string
