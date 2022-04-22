@@ -23,15 +23,15 @@ func decrypt(text []rune, key rune, alphabet []rune) []rune {
 	runes := []rune(text)
 	mod := len(alphabet)
 	shift := indexOf(alphabet, key)
-	cipher := make([]rune, len(runes))
+	plain := make([]rune, len(runes))
 
 	for i, r := range runes {
 		pos := indexOf(alphabet, r)
 		newPos := (pos + shift) % mod
-		cipher[i] = alphabet[newPos]
+		plain[i] = alphabet[newPos]
 	}
 
-	return cipher
+	return plain
 }
 
 // Encrypt a string `text` of alphabet `alphabet` shifting left
