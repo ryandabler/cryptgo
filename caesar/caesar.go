@@ -12,7 +12,7 @@ func encrypt(text []rune, key rune, alphabet []rune) []rune {
 
 	for i, r := range runes {
 		pos := util.IndexOf(alphabet, r)
-		newPos := util.ShiftWrap(pos, shift, mod, util.Left)
+		newPos := util.ShiftWrap(pos, shift, mod, util.Right)
 		cipher[i] = alphabet[newPos]
 	}
 
@@ -27,7 +27,7 @@ func decrypt(text []rune, key rune, alphabet []rune) []rune {
 
 	for i, r := range runes {
 		pos := util.IndexOf(alphabet, r)
-		newPos := util.ShiftWrap(pos, shift, mod, util.Right)
+		newPos := util.ShiftWrap(pos, shift, mod, util.Left)
 		plain[i] = alphabet[newPos]
 	}
 
