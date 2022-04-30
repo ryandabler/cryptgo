@@ -1,5 +1,7 @@
 package util
 
+import "math"
+
 type direction int
 
 const (
@@ -26,9 +28,12 @@ func MapSlice[T any, U any](s []T, m func(T) U) []U {
 }
 
 func Take[T any](s []T, n uint) []T {
-	newS := make([]T, n)
+	lim := int(
+		math.Min(float64(n), float64(len(s))),
+	)
+	newS := make([]T, lim)
 
-	for i := uint(0); i < n; i++ {
+	for i := 0; i < lim; i++ {
 		newS[i] = s[i]
 	}
 
