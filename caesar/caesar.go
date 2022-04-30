@@ -1,6 +1,9 @@
 package caesar
 
-import "cryptgo/internal/util"
+import (
+	"cryptgo/analyze"
+	"cryptgo/internal/util"
+)
 
 type Ranker func([]string) []string
 
@@ -69,7 +72,8 @@ func CrackForce(cipher string, alphabet string, ranker Ranker) []string {
 	return ranker(toStrings(ps))
 }
 
-func CrackFreq(cipher string, alphabet string, frequencies map[string]float64, ranker Ranker) []string {
+func CrackFreq(cipher string, alphabet string, ranker Ranker) []string {
+	frequencies := analyze.LetterFreq(cipher, alphabet)
 	mostFreq := sortedFreqs(frequencies)
 	top5 := util.Take(mostFreq, 5)
 	possibles := make([]string, len(top5))
