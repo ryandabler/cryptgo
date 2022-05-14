@@ -29,6 +29,11 @@ func feistel(bs []byte, ks [][]byte) []byte {
 	return util.Flatten(cipherBlocks)
 }
 
+func decrypt(bs []byte, key []byte) []byte {
+	subkeys := genSubkeys(toBits(key))
+	return feistel(bs, util.Reverse(subkeys))
+}
+
 func encrypt(bs []byte, key []byte) []byte {
 	subkeys := genSubkeys(toBits(key))
 	return feistel(bs, subkeys)
@@ -47,4 +52,17 @@ func Encrypt(plain string, key string) (string, error) {
 	cipher := encrypt(bPlain, bKey)
 
 	return string(toBytes(cipher)), nil
+}
+
+func Decrypt(cipher string, key string) (string, error) {
+	bKey := []byte(key)
+
+	if len(bKey) != 8 {
+		return "", errors.New("Key must be 8 bytes long")
+	}
+
+	bCipher := []byte(cipher)
+	plain := decrypt(bCipher, bKey)
+
+	return string(toBytes(plain)), nil
 }
