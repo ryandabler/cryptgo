@@ -1,6 +1,9 @@
 package util
 
-import "math"
+import (
+	"math"
+	"sort"
+)
 
 type direction int
 
@@ -40,6 +43,18 @@ func Take[T any](s []T, n uint) []T {
 	return newS
 }
 
+func Filter[T any](s []T, p func(T) bool) []T {
+	newS := make([]T, 0, len(s))
+
+	for _, v := range s {
+		if p(v) {
+			newS = append(newS, v)
+		}
+	}
+
+	return newS
+}
+
 func IndexOf[T comparable](arr []T, v T) int {
 	for i, e := range arr {
 		if e == v {
@@ -71,4 +86,70 @@ func shift(n int, by int, dir direction) int {
 func ShiftWrap(n int, by int, mod int, dir direction) int {
 	shifted := shift(n, by, dir)
 	return wrap(shifted, mod)
+}
+
+func SplitAfterIndices[T any](s []T, ps ...int) [][]T {
+	ps = Filter(ps, func(p int) bool {
+		return p <= len(s)
+	})
+	ss := make([][]T, len(ps)+1)
+	prev := 0
+
+	sort.Ints(ps)
+
+	for i, p := range ps {
+		ss[i] = s[prev:p]
+		prev = p
+	}
+
+	ss[len(ps)] = s[prev:]
+
+	return ss
+}
+
+func SplitEvery[T any](s []T, i int) [][]T {
+	iter := len(s) / i
+
+	if len(s)%i != 0 {
+		iter++
+	}
+
+	ss := make([][]T, iter)
+
+	for n := 0; n < iter; n++ {
+		upper := int(math.Min(float64((n+1)*i), float64(len(s))))
+		segment := s[n*i : upper]
+		v := make([]T, len(segment))
+		copy(v, segment)
+		ss[n] = v
+	}
+
+	return ss
+}
+
+func Concat[T any](a []T, b []T) []T {
+	c := make([]T, len(a)+len(b))
+
+	copy(c, a)
+	copy(c[len(a):], b)
+
+	return c
+}
+
+func Flatten[T any](es [][]T) []T {
+	var size int
+
+	for _, e := range es {
+		size += len(e)
+	}
+
+	e := make([]T, size)
+	counter := 0
+
+	for _, v := range es {
+		copy(e[counter:counter+len(v)], v)
+		counter += len(v)
+	}
+
+	return e
 }
