@@ -1,5 +1,7 @@
 package des
 
+import "cryptgo/internal/util"
+
 type bit = byte
 type endian int
 
@@ -33,6 +35,31 @@ func toBits(bs []byte) []bit {
 	}
 
 	return bits
+}
+
+// Converts a slice of bits `bs` to a single byte.
+// The input MUST be at most 8 elements long.
+func toByte(bs []bit) byte {
+	var b byte
+
+	for i, bit := range bs {
+		b |= bit << (7 - i)
+	}
+
+	return b
+}
+
+// Converts a slice of bits `bs` to a slice of bytes. The input
+// slice MUST be a multiple of 8.
+func toBytes(bs []bit) []byte {
+	as8Bits := util.SplitEvery(bs, 8)
+	bytes := make([]byte, len(bs)/8)
+
+	for i, v := range as8Bits {
+		bytes[i] = toByte(v)
+	}
+
+	return bytes
 }
 
 // Convert an int `n` to a slice of bits with a required minimum

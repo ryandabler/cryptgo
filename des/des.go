@@ -42,5 +42,5 @@ func Encrypt(plain string, key string) (string, error) {
 	bPlain = pad(bPlain, 8, 0)
 	cipher := encrypt(bPlain, bKey)
 
-	return string(cipher), nil
+	return string(toBytes(cipher)), nil
 }
