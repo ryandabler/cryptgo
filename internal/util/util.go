@@ -153,3 +153,13 @@ func Flatten[T any](es [][]T) []T {
 
 	return e
 }
+
+func Reverse[T any](as []T) []T {
+	bs := make([]T, len(as))
+
+	for i, a := range as {
+		bs[len(bs)-i-1] = a
+	}
+
+	return bs
+}
