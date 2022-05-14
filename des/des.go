@@ -5,8 +5,7 @@ import (
 	"errors"
 )
 
-func encrypt(bs []byte, key []byte) []byte {
-	subkeys := genSubkeys(toBits(key))
+func feistel(bs []byte, ks [][]byte) []byte {
 	blocks := util.SplitEvery(bs, 8)
 	cipherBlocks := make([][]byte, len(blocks))
 
@@ -18,7 +17,7 @@ func encrypt(bs []byte, key []byte) []byte {
 		rn := split[1]
 
 		for n := 0; n < 16; n++ {
-			ln, rn = rn, xor(ln, round(rn, subkeys[n]))
+			ln, rn = rn, xor(ln, round(rn, ks[n]))
 		}
 
 		m := util.Concat(rn, ln)
@@ -28,6 +27,11 @@ func encrypt(bs []byte, key []byte) []byte {
 	}
 
 	return util.Flatten(cipherBlocks)
+}
+
+func encrypt(bs []byte, key []byte) []byte {
+	subkeys := genSubkeys(toBits(key))
+	return feistel(bs, subkeys)
 }
 
 // TODO: add padding styles, add modes
