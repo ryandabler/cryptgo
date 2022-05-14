@@ -35,7 +35,7 @@ func Encrypt(plain string, key string) (string, error) {
 	bKey := []byte(key)
 
 	if len(bKey) != 8 {
-		return "", errors.New("Key must be 16 bytes long")
+		return "", errors.New("Key must be 8 bytes long")
 	}
 
 	bPlain := []byte(plain)
