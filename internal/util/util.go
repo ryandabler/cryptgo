@@ -17,11 +17,11 @@ func MapValues[K comparable, V any](m map[K]V, f func(V, K) V) map[K]V {
 	return m
 }
 
-func MapSlice[T any, U any](s []T, m func(T) U) []U {
+func MapSlice[T any, U any](s []T, m func(T, int) U) []U {
 	newS := make([]U, len(s))
 
 	for i, v := range s {
-		newS[i] = m(v)
+		newS[i] = m(v, i)
 	}
 
 	return newS
