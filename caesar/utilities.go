@@ -47,7 +47,7 @@ func sortedFreqs(freqs map[string]float64) []string {
 	return util.MapSlice(intermediate, func(e struct {
 		k string
 		v float64
-	}) string {
+	}, _ int) string {
 		return e.k
 	})
 }

@@ -43,7 +43,7 @@ func Encrypt(text string, key string, alphabet string) (string, string, error) {
 			return "", "", errors.New("Could not generate encryption key")
 		}
 
-		ekey = util.MapSlice(ints, func(i int) rune { return alphaR[i] })
+		ekey = util.MapSlice(ints, func(i int, _ int) rune { return alphaR[i] })
 	}
 
 	key = string(ekey)
