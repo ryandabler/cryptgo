@@ -163,3 +163,23 @@ func Reverse[T any](as []T) []T {
 
 	return bs
 }
+
+func Every[T any](as []T, f func(a T, i int) bool) bool {
+	for i, a := range as {
+		if !f(a, i) {
+			return false
+		}
+	}
+
+	return true
+}
+
+func AreSlicesEqual[T comparable](as []T, bs []T) bool {
+	if len(as) != len(bs) {
+		return false
+	}
+
+	return Every(as, func(a T, i int) bool {
+		return a == bs[i]
+	})
+}
