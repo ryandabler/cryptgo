@@ -40,29 +40,26 @@ func encrypt(bs []byte, key []byte) []byte {
 }
 
 // TODO: add padding styles, add modes
-func Encrypt(plain string, key string) (string, error) {
+func Encrypt(plain []byte, key []byte) ([]byte, error) {
 	bKey := []byte(key)
 
 	if len(bKey) != 8 {
-		return "", errors.New("Key must be 8 bytes long")
+		return nil, errors.New("Key must be 8 bytes long")
 	}
 
 	bPlain := []byte(plain)
 	bPlain = pad(bPlain, 8, 0)
 	cipher := encrypt(bPlain, bKey)
 
-	return string(toBytes(cipher)), nil
+	return toBytes(cipher), nil
 }
 
-func Decrypt(cipher string, key string) (string, error) {
-	bKey := []byte(key)
-
-	if len(bKey) != 8 {
-		return "", errors.New("Key must be 8 bytes long")
+func Decrypt(cipher []byte, key []byte) ([]byte, error) {
+	if len(key) != 8 {
+		return nil, errors.New("Key must be 8 bytes long")
 	}
 
-	bCipher := []byte(cipher)
-	plain := decrypt(bCipher, bKey)
+	plain := decrypt(cipher, key)
 
-	return string(toBytes(plain)), nil
+	return toBytes(plain), nil
 }
