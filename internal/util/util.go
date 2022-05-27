@@ -183,3 +183,13 @@ func AreSlicesEqual[T comparable](as []T, bs []T) bool {
 		return a == bs[i]
 	})
 }
+
+func Fill[T any](as []T, v T) []T {
+	bs := make([]T, len(as), cap(as))
+
+	for i := range as {
+		bs[i] = v
+	}
+
+	return bs
+}
