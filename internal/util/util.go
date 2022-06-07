@@ -193,3 +193,19 @@ func Fill[T any](as []T, v T) []T {
 
 	return bs
 }
+
+func Last[T any](as []T) T {
+	return as[len(as)-1]
+}
+
+func FindLast[T any](as []T, f func(a T, i int) bool) (T, int, bool) {
+	var zero T
+
+	for i, v := range Reverse(as) {
+		if f(v, i) {
+			return v, len(as) - i - 1, true
+		}
+	}
+
+	return zero, 0, false
+}
