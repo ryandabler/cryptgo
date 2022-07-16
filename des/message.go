@@ -4,16 +4,6 @@ import (
 	"cryptgo/internal/util"
 )
 
-// Pad slice of bytes `bs` to be an even multiple of int `mod`.
-// Any padded values should be of value byte `p`.
-func pad(bs []byte, mod int, p byte) []byte {
-	for len(bs)%mod != 0 {
-		bs = append(bs, p)
-	}
-
-	return bs
-}
-
 func initialPermute(bs []bit) []bit {
 	return util.MapSlice(initialPermutation[:], func(i int, _ int) bit {
 		return bs[i-1]

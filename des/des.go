@@ -2,8 +2,15 @@ package des
 
 import (
 	"cryptgo/internal/util"
+	"cryptgo/padding"
 	"errors"
 )
+
+type DesOpts = struct {
+	Key   []byte
+	Pad   padding.Padding
+	PByte byte
+}
 
 func feistel(bs []byte, ks [][]byte) []byte {
 	blocks := util.SplitEvery(bs, 8)
@@ -39,27 +46,35 @@ func encrypt(bs []byte, key []byte) []byte {
 	return feistel(bs, subkeys)
 }
 
-// TODO: add padding styles, add modes
-func Encrypt(plain []byte, key []byte) ([]byte, error) {
-	bKey := []byte(key)
-
-	if len(bKey) != 8 {
+// TODO: add modes
+func Encrypt(plain []byte, opts DesOpts) ([]byte, error) {
+	if len(opts.Key) != 8 {
 		return nil, errors.New("Key must be 8 bytes long")
 	}
 
-	bPlain := []byte(plain)
-	bPlain = pad(bPlain, 8, 0)
-	cipher := encrypt(bPlain, bKey)
+	padded := padders[opts.Pad](plain, opts.PByte)
+
+	if opts.Pad == padding.None && len(padded)%8 != 0 {
+		return nil, errors.New("Non-padded messages must have length be a multiple of 8")
+	}
+
+	cipher := encrypt(padded, opts.Key)
 
 	return toBytes(cipher), nil
 }
 
-func Decrypt(cipher []byte, key []byte) ([]byte, error) {
-	if len(key) != 8 {
+func Decrypt(cipher []byte, opts DesOpts) ([]byte, error) {
+	if len(opts.Key) != 8 {
 		return nil, errors.New("Key must be 8 bytes long")
 	}
 
-	plain := decrypt(cipher, key)
+	unpadded, err := unpadders[opts.Pad](cipher)
+
+	if err != nil {
+		return nil, err
+	}
+
+	plain := decrypt(unpadded, opts.Key)
 
 	return toBytes(plain), nil
 }

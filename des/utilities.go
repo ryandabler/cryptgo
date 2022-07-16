@@ -1,9 +1,18 @@
 package des
 
-import "cryptgo/internal/util"
+import (
+	"cryptgo/internal/ciphers/pad"
+	"cryptgo/internal/ciphers/unpad"
+	"cryptgo/internal/util"
+	"cryptgo/padding"
+)
 
 type bit = byte
 type endian int
+type padder = func([]byte, byte) []byte
+type unpadder = func([]byte) ([]byte, error)
+
+const DES_BLOCK_SIZE = 8
 
 const (
 	bigEnd endian = iota
@@ -73,4 +82,50 @@ func toTruncatedBits(n int, p int) []bit {
 	}
 
 	return bs
+}
+
+var padders map[padding.Padding]padder = map[padding.Padding]padder{
+	padding.PKCS7: func(bs []byte, _ byte) []byte {
+		padded, _ := pad.PKCS7(bs, DES_BLOCK_SIZE)
+		return padded
+	},
+	padding.PKCS5: func(bs []byte, _ byte) []byte {
+		padded, _ := pad.PKCS5(bs)
+		return padded
+	},
+	padding.OneAndZeroes: func(bs []byte, _ byte) []byte {
+		return pad.OneAndZeroes(bs, DES_BLOCK_SIZE)
+	},
+	padding.ANSIX923: func(bs []byte, _ byte) []byte {
+		padded, _ := pad.ANSIX923(bs, DES_BLOCK_SIZE)
+		return padded
+	},
+	padding.W3C: func(bs []byte, p byte) []byte {
+		padded, _ := pad.W3C(bs, DES_BLOCK_SIZE, p)
+		return padded
+	},
+	padding.None: func(bs []byte, _ byte) []byte {
+		return bs
+	},
+}
+
+var unpadders map[padding.Padding]unpadder = map[padding.Padding]unpadder{
+	padding.PKCS7: func(bs []byte) ([]byte, error) {
+		return unpad.PKCS7(bs), nil
+	},
+	padding.PKCS5: func(bs []byte) ([]byte, error) {
+		return unpad.PKCS5(bs), nil
+	},
+	padding.OneAndZeroes: func(bs []byte) ([]byte, error) {
+		return unpad.OneAndZeroes(bs)
+	},
+	padding.ANSIX923: func(bs []byte) ([]byte, error) {
+		return unpad.ANSIX923(bs), nil
+	},
+	padding.W3C: func(bs []byte) ([]byte, error) {
+		return unpad.W3C(bs), nil
+	},
+	padding.None: func(bs []byte) ([]byte, error) {
+		return bs, nil
+	},
 }
